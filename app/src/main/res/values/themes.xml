@@ -1,0 +1,26 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Calculator" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="android:background">@color/light_primary</item>
+        <item name="colorPrimaryDark">@color/light_primary</item>
+        <item name="android:colorAccent">@color/dark_teal</item>
+
+    </style>
+
+    <style name="Theme.Calculator" parent="Base.Theme.Calculator" />
+
+    <style name="CircleButtons" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:background">@drawable/rounded_buttons_background</item>
+    </style>
+
+    <style name="CircleButtons.PrimaryTextTint" parent="CircleButtons">
+        <item name="android:textColor">@color/dark_teal</item>
+    </style>
+
+    <style name="TextViewColor" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black</item>
+    </style>
+</resources>
