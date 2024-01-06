@@ -2,30 +2,38 @@ package com.sanjeethdev.calculator;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.TypedArrayUtils;
-
-import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.sanjeethdev.calculator.databinding.ActivityMainBinding;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    DBHelper dbHelper;
     private ActivityMainBinding binding;
 
-    DBHelper dbHelper;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.mainHistory.setEnabled(doesHistoryExist());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(bindingView);
 
         dbHelper = new DBHelper(this);
+        binding.mainHistory.setEnabled(doesHistoryExist());
 
         binding.mainParentheses.setOnClickListener(view -> {
             binding.mainResult.setText("");
@@ -52,15 +61,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.mainBackspace.setOnClickListener(view -> {
-            Log.d(TAG, "Backspace: 1");
-            binding.mainEquation.setText(removeLastChar(binding.mainEquation.getText().toString()));
+            binding.mainEquation.setText(removeLastCharacter(binding.mainEquation.getText().toString()));
         });
 
         binding.mainPlus.setOnClickListener(view -> {
-
-            binding.mainResult.setText("");
-            if (!binding.mainEquation.getText().toString().isEmpty() && !isOperatorValid(binding.mainEquation.getText().toString())) {
+            String lastOperatedValue = binding.mainResult.getText().toString();
+            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
                 binding.mainEquation.append("+");
+            } else if (!lastOperatedValue.isEmpty()) {
+                binding.mainEquation.append(lastOperatedValue + "+");
+                binding.mainResult.setText("");
             } else {
                 Toast.makeText(this, "Invalid format used.", Toast.LENGTH_SHORT).show();
             }
@@ -68,36 +78,48 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.mainMinus.setOnClickListener(view -> {
-            binding.mainResult.setText("");
-            if (!binding.mainEquation.getText().toString().isEmpty() && !isOperatorValid(binding.mainEquation.getText().toString())) {
+            String lastOperatedValue = binding.mainResult.getText().toString();
+            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
                 binding.mainEquation.append("-");
+            } else if (!lastOperatedValue.isEmpty()) {
+                binding.mainEquation.append(lastOperatedValue + "-");
+                binding.mainResult.setText("");
             } else {
                 Toast.makeText(this, "Invalid format used.", Toast.LENGTH_SHORT).show();
             }
         });
 
         binding.mainMultiply.setOnClickListener(view -> {
-            binding.mainResult.setText("");
-            if (!binding.mainEquation.getText().toString().isEmpty() && !isOperatorValid(binding.mainEquation.getText().toString())) {
+            String lastOperatedValue = binding.mainResult.getText().toString();
+            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
                 binding.mainEquation.append("*");
+            } else if (!lastOperatedValue.isEmpty()) {
+                binding.mainEquation.append(lastOperatedValue + "*");
+                binding.mainResult.setText("");
             } else {
                 Toast.makeText(this, "Invalid format used.", Toast.LENGTH_SHORT).show();
             }
         });
 
         binding.mainDivide.setOnClickListener(view -> {
-            binding.mainResult.setText("");
-            if (!binding.mainEquation.getText().toString().isEmpty() && !isOperatorValid(binding.mainEquation.getText().toString())) {
+            String lastOperatedValue = binding.mainResult.getText().toString();
+            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
                 binding.mainEquation.append("/");
+            } else if (!lastOperatedValue.isEmpty()) {
+                binding.mainEquation.append(lastOperatedValue + "/");
+                binding.mainResult.setText("");
             } else {
                 Toast.makeText(this, "Invalid format used.", Toast.LENGTH_SHORT).show();
             }
         });
 
         binding.mainPercentage.setOnClickListener(view -> {
-            binding.mainResult.setText("");
-            if (!binding.mainEquation.getText().toString().isEmpty() && !isOperatorValid(binding.mainEquation.getText().toString())) {
+            String lastOperatedValue = binding.mainResult.getText().toString();
+            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
                 binding.mainEquation.append("%");
+            } else if (!lastOperatedValue.isEmpty()) {
+                binding.mainEquation.append(lastOperatedValue + "%");
+                binding.mainResult.setText("");
             } else {
                 Toast.makeText(this, "Invalid format used.", Toast.LENGTH_SHORT).show();
             }
@@ -154,8 +176,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.mainPlusminus.setOnClickListener(view -> {
+//            TODO: Expand on abilities of +/-
             binding.mainResult.setText("");
             binding.mainEquation.append("(-");
+
         });
 
         binding.mainDot.setOnClickListener(view -> {
@@ -168,22 +192,27 @@ public class MainActivity extends AppCompatActivity {
 
 
         binding.mainEqual.setOnClickListener(view -> {
-            if (!binding.mainEquation.getText().toString().isEmpty()) {
-                String expression = binding.mainEquation.getText().toString();
-                String evaluationResult = evaluateExpression(expression);
+//            TODO: Add Equate to last used operand and operation.
+            String equation = binding.mainEquation.getText().toString();
+
+            if (!equation.isEmpty() && containsDigits(equation)) {
+                String evaluationResult = evaluateExpression(equation);
+
                 if (!evaluationResult.equals("Error")) {
 
                     if (evaluationResult.endsWith(".0")) {
                         evaluationResult = evaluationResult.replace(".0", "");
                     }
 
-                    boolean checkInsert = dbHelper.insertEquation(expression, evaluationResult);
+                    boolean checkInsert = dbHelper.insertEquation(equation, evaluationResult);
                     if (!checkInsert) {
                         Toast.makeText(this, "Not Recorded, something went wrong.", Toast.LENGTH_SHORT).show();
                     }
 
                     binding.mainResult.setText(evaluationResult);
                     binding.mainEquation.setText("");
+                    binding.mainHistory.setEnabled(doesHistoryExist());
+
                 } else {
                     binding.mainResult.setText(R.string.error);
                     binding.mainEquation.setText("");
@@ -193,14 +222,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.mainHistory.setOnClickListener(view -> {
-            startActivity(new Intent(this, HistoryActivity.class));
-        });
 
+            if (doesHistoryExist()) {
+                startActivity(new Intent(this, HistoryActivity.class));
+            }
+        });
 
     }
 
-    private boolean areBracketsBalanced(String expression)
-    {
+    private boolean doesHistoryExist() {
+        Cursor cursor = dbHelper.getHistory();
+        boolean result = cursor.getCount() != 0;
+        cursor.close();
+        return result;
+
+    }
+
+    private boolean containsDigits(String expression) {
+        return expression.matches(".*\\d.*");
+    }
+
+    private boolean areBracketsBalanced(String expression) {
+//        TODO: Better & Wider range in balancing of brackets
         Deque<Character> stack = new ArrayDeque<Character>();
 
         for (int i = 0; i < expression.length(); i++) {
@@ -215,17 +258,16 @@ public class MainActivity extends AppCompatActivity {
                 stack.pop();
             }
         }
-
         return (stack.isEmpty());
     }
 
-    private String removeLastChar(String str) {
-        return removeChars(str, 1);
+    private String removeLastCharacter(String str) {
+        return removeCharacter(str);
     }
 
-    private String removeChars(String str, int numberOfCharactersToRemove) {
-        if(str != null && !str.trim().isEmpty()) {
-            return str.substring(0, str.length() - numberOfCharactersToRemove);
+    private String removeCharacter(String string) {
+        if (string != null && !string.trim().isEmpty()) {
+            return string.substring(0, string.length() - 1);
         }
         return "";
     }
@@ -236,18 +278,17 @@ public class MainActivity extends AppCompatActivity {
             context.setOptimizationLevel(-1);
             Scriptable scriptable = context.initSafeStandardObjects();
             if (expression.contains("%")) {
-                expression = expression.replace("%","/100*");
-            } else if (expression.contains(")") && !(expression.indexOf(")") == (expression.length()-1))) {
-                expression = expression.replace(")",")*");
+                expression = expression.replace("%", "/100*");
             }
-            return context.evaluateString(scriptable,expression,"Javascript",1,null).toString();
+            return context.evaluateString(scriptable, expression, "Javascript", 1, null).toString();
         } catch (Exception exception) {
+            Log.d(TAG, "evaluateExpression: " + exception);
             return "Error";
         }
     }
 
-    private boolean isOperatorValid(String expression) {
-        String[] operators = {"+", "-", "*","/"};
-        return  Arrays.stream(operators).anyMatch(expression.substring(expression.length() - 1)::equals);
+    private boolean isOperatorPlacementValid(String expression) {
+        String[] operators = {"+", "-", "*", "/","%"};
+        return !Arrays.asList(operators).contains(expression.substring(expression.length() - 1));
     }
 }

@@ -1,28 +1,23 @@
 package com.sanjeethdev.calculator;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.sanjeethdev.calculator.databinding.ActivityHistoryBinding;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
 
+    private ActivityHistoryBinding binding;
     DBHelper dbHelper;
-    private static ActivityHistoryBinding binding;
     private List<String> outputStrings;
     private HistoryAdapter adapter;
-    
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,21 +41,27 @@ public class HistoryActivity extends AppCompatActivity {
         });
 
         binding.historyClear.setOnClickListener(view -> {
-            dbHelper.deleteAllEquation();
-            binding.historyRecyclerview.notifyAll();
-
+            clearHistory();
         });
+
 
     }
 
     private void showHistory() {
         Cursor cursor = dbHelper.getHistory();
         if (cursor.getCount() == 0) {
-            Toast.makeText(this, "No History", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Empty History", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
                 outputStrings.add(cursor.getString(1) + "\n = " + cursor.getString(2));
             }
         }
+    }
+
+    private void clearHistory() {
+        int size = adapter.getItemCount();
+        outputStrings.clear();
+        adapter.notifyItemRangeRemoved(0, size);
+        dbHelper.deleteAllEquation();
     }
 }

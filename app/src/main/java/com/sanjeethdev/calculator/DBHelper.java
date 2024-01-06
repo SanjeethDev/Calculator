@@ -5,8 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.ActionBarContextView;
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
@@ -26,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean insertEquation(String expression, String result) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("expression", expression );
+        contentValues.put("expression", expression);
         contentValues.put("result", result);
         long resultCode = sqLiteDatabase.insert("EquationDetails", null, contentValues);
 

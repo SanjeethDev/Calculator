@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,7 +41,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
 
-    public class HistoryViewHolder extends RecyclerView.ViewHolder {
+    public static class HistoryViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
 
         public HistoryViewHolder(@NonNull View itemView) {

@@ -7,5 +7,6 @@
     <color name="warning_red">#ff5245</color>
     <color name="dark_teal">#2a8e9d</color>
     <color name="yellow">#ffc938</color>
+    <color name="light_grey">#9A9A9A</color>
 
 </resources>
