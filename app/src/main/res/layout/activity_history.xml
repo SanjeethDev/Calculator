@@ -22,7 +22,7 @@
         style="@style/TextViewColor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="History"
+        android:text="@string/history"
         android:textAlignment="center"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/history_back"

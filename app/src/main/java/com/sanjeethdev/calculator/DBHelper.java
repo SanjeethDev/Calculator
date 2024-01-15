@@ -28,11 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("result", result);
         long resultCode = sqLiteDatabase.insert("EquationDetails", null, contentValues);
 
-        if (resultCode == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return resultCode != -1;
     }
 
     public void deleteAllEquation() {
@@ -42,7 +38,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor getHistory() {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM EquationDetails ORDER BY timestamp DESC", null);
-        return cursor;
+        return sqLiteDatabase.rawQuery("SELECT * FROM EquationDetails ORDER BY timestamp DESC", null);
     }
 }

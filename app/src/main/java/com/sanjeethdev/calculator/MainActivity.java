@@ -3,14 +3,12 @@ package com.sanjeethdev.calculator;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,11 +21,11 @@ import org.mozilla.javascript.Scriptable;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     private ActivityMainBinding binding;
+    private String equation = "";
 
     @Override
     protected void onResume() {
@@ -45,9 +43,22 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         binding.mainHistory.setEnabled(doesHistoryExist());
 
+        binding.mainEquation.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                equation = charSequence.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
         binding.mainParentheses.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            String equation = binding.mainEquation.getText().toString();
+            //Don't close an empty bracket.
             if (areBracketsBalanced(equation)) {
                 binding.mainEquation.append("(");
             } else {
@@ -60,13 +71,12 @@ public class MainActivity extends AppCompatActivity {
             binding.mainResult.setText("");
         });
 
-        binding.mainBackspace.setOnClickListener(view -> {
-            binding.mainEquation.setText(removeLastCharacter(binding.mainEquation.getText().toString()));
-        });
+        binding.mainBackspace.setOnClickListener(view -> binding.mainEquation.setText(removeLastCharacters(equation, 1)));
 
+        // TODO: Add last operator swapping function
         binding.mainPlus.setOnClickListener(view -> {
             String lastOperatedValue = binding.mainResult.getText().toString();
-            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
+            if (!equation.isEmpty() && isOperatorPlacementValid(equation)) {
                 binding.mainEquation.append("+");
             } else if (!lastOperatedValue.isEmpty()) {
                 binding.mainEquation.append(lastOperatedValue + "+");
@@ -79,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.mainMinus.setOnClickListener(view -> {
             String lastOperatedValue = binding.mainResult.getText().toString();
-            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
+            if (!equation.isEmpty() && isOperatorPlacementValid(equation)) {
                 binding.mainEquation.append("-");
             } else if (!lastOperatedValue.isEmpty()) {
                 binding.mainEquation.append(lastOperatedValue + "-");
@@ -91,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.mainMultiply.setOnClickListener(view -> {
             String lastOperatedValue = binding.mainResult.getText().toString();
-            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
+            if (!equation.isEmpty() && isOperatorPlacementValid(equation)) {
                 binding.mainEquation.append("*");
             } else if (!lastOperatedValue.isEmpty()) {
                 binding.mainEquation.append(lastOperatedValue + "*");
@@ -103,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.mainDivide.setOnClickListener(view -> {
             String lastOperatedValue = binding.mainResult.getText().toString();
-            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
+            if (!equation.isEmpty() && isOperatorPlacementValid(equation)) {
                 binding.mainEquation.append("/");
             } else if (!lastOperatedValue.isEmpty()) {
                 binding.mainEquation.append(lastOperatedValue + "/");
@@ -115,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.mainPercentage.setOnClickListener(view -> {
             String lastOperatedValue = binding.mainResult.getText().toString();
-            if (!binding.mainEquation.getText().toString().isEmpty() && isOperatorPlacementValid(binding.mainEquation.getText().toString())) {
+            if (!equation.isEmpty() && isOperatorPlacementValid(equation)) {
                 binding.mainEquation.append("%");
             } else if (!lastOperatedValue.isEmpty()) {
                 binding.mainEquation.append(lastOperatedValue + "%");
@@ -176,14 +186,55 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.mainPlusminus.setOnClickListener(view -> {
-//            TODO: Expand on abilities of +/-
             binding.mainResult.setText("");
-            binding.mainEquation.append("(-");
+
+            if (!equation.isEmpty()) {
+                // Checks for negative number and swaps it for positive
+                StringBuilder reversedLastOperand = new StringBuilder();
+                StringBuilder lastOperand = new StringBuilder();
+                int digitsCount = 0;
+                boolean negativeFlag = false;
+
+                for (int i = equation.length() - 1; i >= 0; i--) {
+                    // Sorta captures the last operand in reverse
+                    if (containsDigits(String.valueOf(equation.charAt(i)))) {
+                        reversedLastOperand.append(equation.charAt(i));
+                        digitsCount++;
+
+                    } else if (String.valueOf(equation.charAt(i)).equals("-")) {
+                        if (String.valueOf(equation.charAt(i-1)).equals("(")) {
+                            negativeFlag = true;
+                        } else {
+                            break;
+                        }
+
+                    } else {
+                        break;
+                    }
+                }
+
+                //Reverse the reversed operand
+                for (int i = reversedLastOperand.length() - 1; i >= 0; i--) {
+                    lastOperand.append(reversedLastOperand.charAt(i));
+                }
+
+                String finalAdjustment;
+                if (negativeFlag) {
+                    finalAdjustment = removeLastCharacters(equation, digitsCount+2) + lastOperand;
+                } else {
+                    finalAdjustment = removeLastCharacters(equation, digitsCount) + "(-" + lastOperand;
+                }
+
+                binding.mainEquation.setText(finalAdjustment);
+            } else {
+                binding.mainEquation.append("(-");
+            }
 
         });
 
         binding.mainDot.setOnClickListener(view -> {
-            if (binding.mainEquation.getText().toString().isEmpty()) {
+            binding.mainResult.setText("");
+            if (equation.isEmpty()) {
                 binding.mainEquation.append("0.");
             } else {
                 binding.mainEquation.append(".");
@@ -192,9 +243,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         binding.mainEqual.setOnClickListener(view -> {
-//            TODO: Add Equate to last used operand and operation.
-            String equation = binding.mainEquation.getText().toString();
-
             if (!equation.isEmpty() && containsDigits(equation)) {
                 String evaluationResult = evaluateExpression(equation);
 
@@ -204,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
                         evaluationResult = evaluationResult.replace(".0", "");
                     }
 
+                    // Store the recent calculations in database
                     boolean checkInsert = dbHelper.insertEquation(equation, evaluationResult);
                     if (!checkInsert) {
                         Toast.makeText(this, "Not Recorded, something went wrong.", Toast.LENGTH_SHORT).show();
@@ -244,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean areBracketsBalanced(String expression) {
 //        TODO: Better & Wider range in balancing of brackets
-        Deque<Character> stack = new ArrayDeque<Character>();
+        Deque<Character> stack = new ArrayDeque<>();
 
         for (int i = 0; i < expression.length(); i++) {
             char x = expression.charAt(i);
@@ -261,13 +310,9 @@ public class MainActivity extends AppCompatActivity {
         return (stack.isEmpty());
     }
 
-    private String removeLastCharacter(String str) {
-        return removeCharacter(str);
-    }
-
-    private String removeCharacter(String string) {
+    private String removeLastCharacters(String string, int count) {
         if (string != null && !string.trim().isEmpty()) {
-            return string.substring(0, string.length() - 1);
+            return string.substring(0, string.length() - count);
         }
         return "";
     }
@@ -291,4 +336,5 @@ public class MainActivity extends AppCompatActivity {
         String[] operators = {"+", "-", "*", "/","%"};
         return !Arrays.asList(operators).contains(expression.substring(expression.length() - 1));
     }
+
 }
