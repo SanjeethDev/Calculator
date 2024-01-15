@@ -1,6 +1,5 @@
 package com.sanjeethdev.calculator;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,9 @@ import java.util.List;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
 
-    private Context context;
-    private List<String> outputString;
+    private final List<String> outputString;
 
-    public HistoryAdapter(Context context, List<String> outputString) {
-        this.context = context;
+    public HistoryAdapter(List<String> outputString) {
         this.outputString = outputString;
     }
 
@@ -42,7 +39,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
 
     public static class HistoryViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        final TextView textView;
 
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);

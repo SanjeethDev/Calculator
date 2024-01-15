@@ -2,18 +2,18 @@ package com.sanjeethdev.calculator;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.sanjeethdev.calculator.databinding.ActivityHistoryBinding;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
-
-    private ActivityHistoryBinding binding;
     DBHelper dbHelper;
     private List<String> outputStrings;
     private HistoryAdapter adapter;
@@ -22,7 +22,7 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityHistoryBinding.inflate(getLayoutInflater());
+        ActivityHistoryBinding binding = ActivityHistoryBinding.inflate(getLayoutInflater());
         View viewBinding = binding.getRoot();
         setContentView(viewBinding);
 
@@ -32,7 +32,7 @@ public class HistoryActivity extends AppCompatActivity {
         outputStrings = new ArrayList<>();
 
         showHistory();
-        adapter = new HistoryAdapter(HistoryActivity.this, outputStrings);
+        adapter = new HistoryAdapter(outputStrings);
         binding.historyRecyclerview.setAdapter(adapter);
 
         binding.historyBack.setOnClickListener(view -> {
@@ -40,9 +40,7 @@ public class HistoryActivity extends AppCompatActivity {
             finish();
         });
 
-        binding.historyClear.setOnClickListener(view -> {
-            clearHistory();
-        });
+        binding.historyClear.setOnClickListener(view -> clearHistory());
 
 
     }

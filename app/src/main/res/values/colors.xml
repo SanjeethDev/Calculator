@@ -8,5 +8,5 @@
     <color name="dark_teal">#2a8e9d</color>
     <color name="yellow">#ffc938</color>
     <color name="light_grey">#9A9A9A</color>
-
+    <color name="transparent">#00000000</color>
 </resources>
