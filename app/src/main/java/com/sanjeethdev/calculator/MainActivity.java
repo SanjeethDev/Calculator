@@ -261,11 +261,9 @@ public class MainActivity extends AppCompatActivity {
 
                 String adjustedEquation = equation;
                 if (equation.contains(getString(R.string.Divide)) || equation.contains(getString(R.string.Multiply))) {
-                    Log.d("DEBUG", "onCreate: " + adjustedEquation);
                     adjustedEquation = adjustedEquation.replace(getString(R.string.Divide), "/").replace(getString(R.string.Multiply), "*");
                 }
 
-                Log.d("DEBUG", "     " + adjustedEquation);
                 String evaluationResult = evaluateExpression(adjustedEquation);
                 if (!evaluationResult.equals("Error")) {
                     if (evaluationResult.endsWith(".0")) {
