@@ -10,14 +10,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.sanjeethdev.calculator.databinding.ActivityMainBinding;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
-
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -59,12 +55,14 @@ public class MainActivity extends AppCompatActivity {
         binding.mainParentheses.setOnClickListener(view -> {
             binding.mainResult.setText("");
             // Deals with the parenthesis insertion; either '(' or ')'
-            if (equation.matches(".*\\d")) {
+            if (equation.matches(".*\\d") && bracketsBalance(equation) != 0) {
                 binding.mainEquation.append(")");
             } else if (equation.endsWith(")") && bracketsBalance(equation) != 0) {
                 binding.mainEquation.append(")");
             } else if (equation.endsWith(")") && bracketsBalance(equation) == 0) {
-                binding.mainEquation.append("*(");
+                binding.mainEquation.append("×(");
+            } else if (equation.matches(".*\\d") && bracketsBalance(equation) == 0) {
+                binding.mainEquation.append("×(");
             } else {
                 binding.mainEquation.append("(");
             }
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     operatorSwap(getString(R.string.Multiply));
                 }
             } else if (!lastOperatedValue.isEmpty()) {
-                binding.mainEquation.append(lastOperatedValue + R.string.Multiply);
+                binding.mainEquation.append(lastOperatedValue + getString(R.string.Multiply));
                 binding.mainResult.setText("");
             } else {
                 Toast.makeText(this, "Invalid format used", Toast.LENGTH_SHORT).show();
@@ -125,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     operatorSwap(getString(R.string.Divide));
                 }
             } else if (!lastOperatedValue.isEmpty()) {
-                binding.mainEquation.append(lastOperatedValue + R.string.Divide);
+                binding.mainEquation.append(lastOperatedValue + getString(R.string.Divide));
                 binding.mainResult.setText("");
             } else {
                 Toast.makeText(this, "Invalid format used", Toast.LENGTH_SHORT).show();
@@ -148,52 +146,93 @@ public class MainActivity extends AppCompatActivity {
 
         binding.mainOne.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("1");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×1");
+            } else {
+                binding.mainEquation.append("1");
+            }
+
         });
 
         binding.mainTwo.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("2");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×2");
+            } else {
+                binding.mainEquation.append("2");
+            }
         });
 
         binding.mainThree.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("3");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×3");
+            } else {
+                binding.mainEquation.append("3");
+            }
         });
 
         binding.mainFour.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("4");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×4");
+            } else {
+                binding.mainEquation.append("4");
+            }
         });
 
         binding.mainFive.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("5");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×5");
+            } else {
+                binding.mainEquation.append("5");
+            }
         });
 
         binding.mainSix.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("6");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×6");
+            } else {
+                binding.mainEquation.append("6");
+            }
         });
 
         binding.mainSeven.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("7");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×7");
+            } else {
+                binding.mainEquation.append("7");
+            }
         });
 
         binding.mainEight.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("8");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×8");
+            } else {
+                binding.mainEquation.append("8");
+            }
         });
 
         binding.mainNine.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("9");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×9");
+            } else {
+                binding.mainEquation.append("9");
+            }
         });
 
         binding.mainZero.setOnClickListener(view -> {
             binding.mainResult.setText("");
-            binding.mainEquation.append("0");
+            if (equation.endsWith(")")) {
+                binding.mainEquation.append("×0");
+            } else {
+                binding.mainEquation.append("0");
+            }
         });
 
         binding.mainPlusminus.setOnClickListener(view -> {
@@ -287,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
         binding.mainHistory.setOnClickListener(view -> {
             if (doesHistoryExist()) {
                 startActivity(new Intent(this, HistoryActivity.class));
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             }
         });
 

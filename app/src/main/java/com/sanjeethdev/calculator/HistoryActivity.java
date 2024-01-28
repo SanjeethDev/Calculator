@@ -38,6 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
         binding.historyBack.setOnClickListener(view -> {
             dbHelper.close();
             finish();
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         });
 
         binding.historyClear.setOnClickListener(view -> clearHistory());
