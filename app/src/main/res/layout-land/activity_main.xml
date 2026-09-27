@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/main_equation"
+        style="@style/TextViewColor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@color/transparent"
+        android:enabled="false"
+        android:hint="@string/Blank"
+        android:importantForAutofill="no"
+        android:inputType="none"
+        android:textAlignment="textEnd"
+        android:textSize="48sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/landscape_horizontal_marker"
+        app:layout_constraintEnd_toStartOf="@id/landscape_vertical_marker" />
+
+    <TextView
+        android:id="@+id/main_result"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/bottom_border"
+        android:textAlignment="textEnd"
+        android:textSize="36sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/landscape_vertical_marker"
+        app:layout_constraintTop_toBottomOf="@id/landscape_horizontal_marker" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/main_parentheses"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/main_history"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/history_button_states"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_backspace"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/main_backspace"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/ic_backspace"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/main_history"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <Button
+        android:id="@+id/main_parentheses"
+        style="@style/CircleButtons.PrimaryTextTint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/Parenthesis"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/main_percentage"
+        style="@style/CircleButtons.PrimaryTextTint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/Percentage"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_divide"
+        style="@style/CircleButtons.PrimaryTextTint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/Divide"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_clear"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/Clear"
+        android:textAlignment="center"
+        android:textColor="@color/warning_red"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_seven"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/_7"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_eight"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/_8"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_nine"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/_9"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_multiply"
+        style="@style/CircleButtons.PrimaryTextTint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/Multiply"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_four"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/_4"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_five"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/_5"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_minus"
+        style="@style/CircleButtons.PrimaryTextTint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/Minus"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_six"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/_6"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_one"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/_1"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_two"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/_2"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_three"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/_3"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_plus"
+        style="@style/CircleButtons.PrimaryTextTint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/Plus"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_plusminus"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/PlusMinus"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_zero"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/_0"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_dot"
+        style="@style/CircleButtons"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/Dot"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/main_equal"
+        style="@style/CircleButtons.PrimaryTextTint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/Equals"
+        android:textAlignment="center"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/landscape_horizontal_marker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/landscape_vertical_marker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/landscape_vertical_marker"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:flow_horizontalGap="8dp"
+        app:flow_verticalGap="8dp"
+        android:padding="16dp"
+        app:flow_maxElementsWrap="4"
+        app:flow_wrapMode="aligned"
+        app:constraint_referenced_ids="main_parentheses, main_percentage, main_divide, main_clear, main_seven, main_eight, main_nine, main_multiply, main_four, main_five, main_six, main_minus, main_one, main_two, main_three, main_plus, main_plusminus, main_zero, main_dot, main_equal"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
